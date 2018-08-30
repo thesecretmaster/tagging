@@ -1,0 +1,87 @@
+.taggify-input *, .taggify-input {
+  box-sizing: border-box;
+}
+
+.taggify-input {
+  border: 1px lightgrey solid;
+  border-radius:2px;
+  width:500px;
+  padding-top:10px;
+  padding-bottom:10px;
+  padding-left:5px;
+}
+.taggify-input .tags {
+  display: inline-block;
+}
+
+
+.taggify-input .auto-complete .suggestion h3 {
+  font-weight: normal;
+}
+.taggify-input .auto-complete .suggestion {
+  padding: 0.7em;
+  padding-top: 0.3em;
+  width: 150px;
+  margin:-0.5px;
+  border: black solid 1px;
+}
+.taggify-input .auto-complete {
+  position: absolute;
+  margin-top: 1.2em;
+  width:450px;
+  display:flex;
+  flex-wrap: wrap;
+  background: white;
+}
+.taggify-input .auto-complete .suggestion:focus {
+  font-weight: bold;
+  background-color:lightblue;
+}
+.taggify-input .auto-complete:empty {
+  display:none;
+}
+
+
+
+.taggify-input .tag {
+  padding: 2px;
+  background: lightblue;
+  border: black 1px solid;
+}
+/* For some reason the last tag is missing its right border. This doesn't fix it, but
+ * it's a note so that I know the problem exists
+ */
+.taggify-input .tags:nth-child(3) .tag:last-child {
+  border-right: black 2px solid;
+}
+.taggify-input .tags .tag {
+  margin: 4px;
+}
+.taggify-input .tags .tag .delete {
+  color: rgba(0,0,0,0.5);
+  padding-left: 3px;
+  padding-right: 1px;
+  transition:0.1s;
+}
+.taggify-input .tags .tag .delete:hover {
+  color: rgba(255,0,0,0.4);
+}
+.taggify-input input {
+  /*flex: 1;*/
+  /* Spacing resets */
+  padding:0px;
+  margin:0px;
+  /* Font resets */
+  font-size:inherit;
+  font-family:inherit;
+  /* Style resets */
+  background:none;
+  border:none;
+  outline:none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+.settings .group {
+  display:block;
+}

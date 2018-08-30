@@ -1,0 +1,33 @@
+<!DOCTYPE html5>
+<html>
+  <head>
+    <title>Tagging Test</title>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+
+    <!-- Taggify essentials -->
+    <script src='./helpers.js'></script>
+    <script src='./taggify.js'></script>
+    <link rel="stylesheet" href="./taggify.css">
+
+    <!-- Stuff just for this page -->
+    <link rel="stylesheet" href="./index.css">
+    <script async defer src='./index.js'></script>
+  </head>
+  <body>
+    <div class="settings">
+      <p>Here are some settings to mess with. WARNING: These are not meant to be live. Any setting changes will affect <b>future</b> actions and not past actions.
+        So if you flip off 'delete_button', future tags will be created without a delete button, but current tags will keep theirs and it will be functional.
+      </p>
+      <form id="settings">
+      </form>
+    </div>
+    <div class="taggify-input">
+      <div class="tags">
+      </div><input type="text" value="Tag6"><div class="tags">
+      </div>
+      <div class="auto-complete"></div>
+    </div>
+  </body>
+</html>
