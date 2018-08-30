@@ -1,0 +1,113 @@
+.taggify-input *, .taggify-input {
+  box-sizing: border-box;
+}
+
+.taggify-input {
+  border: 1px lightgrey solid;
+  border-radius:2px;
+  width:500px;
+  height:auto;
+  padding-top:10px;
+  padding-bottom:10px;
+  padding-left:5px;
+}
+.taggify-input .tags {
+  display: inline-block;
+}
+
+
+.taggify-input .autocomplete .suggestion h3 {
+  font-weight: normal;
+}
+.taggify-input .autocomplete .suggestion {
+  padding: 0.7em;
+  padding-top: 0.3em;
+  width: 300px;
+  margin:-0.5px;
+  border: black solid 1px;
+}
+.taggify-input .autocomplete {
+  position: absolute;
+  margin-top: 1.2em;
+  max-height:250px;
+  overflow-y:scroll;
+  width:900px;
+  display:flex;
+  flex-wrap: wrap;
+  background: white;
+}
+.taggify-input .autocomplete .suggestion:focus {
+  font-weight: bold;
+  background-color:lightblue;
+}
+.taggify-input .autocomplete:empty {
+  display:none;
+}
+
+
+
+.taggify-input .tag {
+  padding: 2px;
+  background: lightblue;
+  border: black 1px solid;
+}
+/* For some reason the last tag is missing its right border. This doesn't fix it, but
+ * it's a note so that I know the problem exists
+ */
+.taggify-input .tags:nth-child(3) .tag:last-child {
+  border-right: black 1px solid;
+}
+.taggify-input .tags .tag {
+  margin: 4px;
+}
+.taggify-input .tags .tag .delete {
+  color: rgba(0,0,0,0.5);
+  padding-left: 3px;
+  padding-right: 1px;
+  transition:0.1s;
+}
+.taggify-input .tags .tag .delete:hover {
+  color: rgba(255,0,0,0.4);
+}
+.taggify-input input {
+  /*flex: 1;*/
+  /* Spacing resets */
+  padding:0px !important;
+  margin:0px !important;
+  /* Font resets */
+  font-size:inherit !important;
+  font-family:inherit !important;
+  /* Style resets */
+  background:none !important;
+  border:none !important;
+  outline:none !important;
+  -moz-appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+.settings .group {
+  display:block;
+}
+
+/* STEALING FROM FONTAWESOME */
+/* fas fa-sm fa-times-circle */
+
+@font-face {
+  font-family:"Font Awesome 5 Free";
+  font-style:normal;
+  font-weight:400;
+  src:url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.eot);
+  src:url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.eot?#iefix) format("embedded-opentype"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.woff2) format("woff2"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.woff) format("woff"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.ttf) format("truetype"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-regular-400.svg#fontawesome) format("svg");
+}
+@font-face {
+  font-family:"Font Awesome 5 Free";
+  font-style:normal;font-weight:900;
+  src:url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.eot);
+  src:url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.eot?#iefix) format("embedded-opentype"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.woff2) format("woff2"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.woff) format("woff"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.ttf) format("truetype"),url(https://use.fontawesome.com/releases/v5.2.0/webfonts/fa-solid-900.svg#fontawesome) format("svg");
+}
+
+.fas{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:inline-block;font-style:normal;font-variant:normal;text-rendering:auto;line-height:1}
+.fas{font-family:"Font Awesome 5 Free"}
+.fas{font-weight:900}
+.fa-sm{font-size:.875em}
+.fa-times-circle:before{content:"\f057"}
