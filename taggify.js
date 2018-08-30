@@ -14,7 +14,14 @@
     ],
     'taggify_element': function(ele) {
       var div;
-      console.log(ele.tagName);
+      var taglist = ele.getAttribute('taggify-datalist');
+      if (taglist != undefined && document.getElementById(taglist)) {
+        var taglist_elements = document.getElementById(taglist).children;
+        Taggify.autocomplete_dict = [];
+        for (var i = 0; i < taglist_elements.length; i++) {
+          Taggify.autocomplete_dict.push([taglist_elements[i].value, '']);
+        }
+      }
       if (ele.tagName.toLowerCase() == 'div') {
         div = ele;
       } else {
@@ -26,13 +33,59 @@
       tags_container.className = 'tags';
       if (ele.tagName.toLowerCase() == 'input') {
         input = ele;
+        var input_tags = input.className.split(' ');
+        for (var i = 0; i < input_tags.length; i++) {
+          div.classList.add(input_tags[i]);
+        }
+        input.className = '';
       } else {
         var input = document.createElement('input');
         input.type = 'text';
       }
+      if (input.form != undefined) {
+        console.log("Addd submit lstner")
+        input.form.addEventListener('submit', function(e) {
+          console.log("Got submit")
+          var taggify_inputs = this.getElementsByClassName('taggify-input');
+          for (var i = 0; i < taggify_inputs.length; i++) {
+            console.log("adding for an input")
+            var tag_input = taggify_inputs[i];
+            var start_tags = tag_input.children[0].children;
+            var end_tags = tag_input.children[2].children;
+            var tags = [];
+            for (var j = 0; j < start_tags.length; j++) {
+              tags.push(start_tags[j].textContent);
+            }
+            for (var j = 0; j < end_tags.length; j++) {
+              tags.push(end_tags[j].textContent);
+            }
+            var hidden_input = document.createElement('input');
+            hidden_input.type = 'hidden';
+            var old_id = input.id;
+            var old_name = input.name;
+            input.removeAttribute('name');
+            hidden_input.name = old_name+'[]';
+            for (var j =0; j < tags.length; j++) {
+              hidden_input_ele = hidden_input.cloneNode();
+              hidden_input_ele.value = tags[j];
+              this.appendChild(hidden_input_ele);
+            }
+          }
+        });
+      } else {
+        console.log("NO FORM");
+      }
       var autocomplete = document.createElement('div');
       autocomplete.className = 'autocomplete';
-      div.appendChild(tags_container.cloneNode());
+      var start_tags_container = tags_container.cloneNode();
+      if (ele.getAttribute('taggify-initial-tags') != undefined) {
+        var inital_tags = ele.getAttribute('taggify-initial-tags').split(',');
+        for (var i = 0; i < inital_tags.length; i++) {
+          var start_tag = generateTagEleRaw(inital_tags[i]);
+          start_tags_container.appendChild(start_tag);
+        }
+      }
+      div.appendChild(start_tags_container);
       div.appendChild(input);
       div.appendChild(tags_container);
       div.appendChild(autocomplete);
@@ -119,20 +172,25 @@
     return tags.includes(val);
   }
 
+  function generateTagEleRaw(val) {
+    var new_tag = document.createElement('span');
+    new_tag.textContent = val.trim();
+    new_tag.className = 'tag';
+    if (SETTINGS.delete_button) {
+      var delete_mark = document.createElement('i');
+      delete_mark.className = 'fas fa-sm fa-times-circle delete';
+      new_tag.appendChild(delete_mark);
+    }
+    return new_tag;
+  }
+
   function generateTagEle(val, container) {
     var tag_input = container.parentElement;
     var start_tags_container = tag_input.children[0];
     var end_tags_container = tag_input.children[2];
 
     if (val != '' && !tagExists(val, tag_input)) {
-      var new_tag = document.createElement('span');
-      new_tag.textContent = val.trim();
-      new_tag.className = 'tag';
-      if (SETTINGS.delete_button) {
-        var delete_mark = document.createElement('i');
-        delete_mark.className = 'fas fa-sm fa-times-circle delete';
-        new_tag.appendChild(delete_mark);
-      }
+      var new_tag = generateTagEleRaw(val.trim());
       if (container == end_tags_container) {
        container.insertBefore(new_tag, container.firstChild);
       } else if (container == start_tags_container) {
@@ -449,6 +507,7 @@
         generateTagEle(val, start_tags_container);
         input.focus();
         clearSuggestions(this);
+        e.preventDefault();
         return false;
       }
 
