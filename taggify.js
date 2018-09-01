@@ -1,4 +1,4 @@
-(function(window, document, undefined) {
+(function(window, document) {
   window.Taggify = Object.assign({}, window.Taggify, {
     'autocomplete_dict': [],
     'settings': {
@@ -22,7 +22,7 @@
           Taggify.autocomplete_dict.push([taglist_elements[i].value, '']);
         }
       }
-      if (ele.tagName.toLowerCase() == 'div') {
+      if (ele.tagName.toLowerCase() === 'div') {
         div = ele;
       } else {
         div = document.createElement('div');
@@ -31,7 +31,7 @@
       div.classList.add('taggify-input');
       var tags_container = document.createElement('div');
       tags_container.className = 'tags';
-      if (ele.tagName.toLowerCase() == 'input') {
+      if (ele.tagName.toLowerCase() === 'input') {
         input = ele;
         var input_tags = input.className.split(' ');
         for (var i = 0; i < input_tags.length; i++) {
@@ -43,12 +43,9 @@
         input.type = 'text';
       }
       if (input.form != undefined) {
-        console.log("Addd submit lstner")
         input.form.addEventListener('submit', function(e) {
-          console.log("Got submit")
           var taggify_inputs = this.getElementsByClassName('taggify-input');
           for (var i = 0; i < taggify_inputs.length; i++) {
-            console.log("adding for an input")
             var tag_input = taggify_inputs[i];
             var start_tags = tag_input.children[0].children;
             var end_tags = tag_input.children[2].children;
@@ -72,8 +69,6 @@
             }
           }
         });
-      } else {
-        console.log("NO FORM");
       }
       var autocomplete = document.createElement('div');
       autocomplete.className = 'autocomplete';
@@ -137,7 +132,7 @@
   const htmlEncode = window.Taggify.helpers.htmlEncode;
 
   function checkKeyCode(e, num, name) {
-    return (e.which == num || e.keyCode == num || e.code == name || e.key == name);
+    return (e.which === num || e.keyCode === num || e.code === name || e.key === name);
   }
 
   function fillInput(input, container) {
@@ -145,9 +140,9 @@
     var start_tags_container = tag_input.children[0];
     var end_tags_container = tag_input.children[2];
 
-    if (container == end_tags_container) {
+    if (container === end_tags_container) {
       var ele = container.children[0];
-    } else if (container == start_tags_container) {
+    } else if (container === start_tags_container) {
       var ele = container.children[container.children.length-1];
     }
     if (ele != undefined) {
@@ -191,9 +186,9 @@
 
     if (val != '' && !tagExists(val, tag_input)) {
       var new_tag = generateTagEleRaw(val.trim());
-      if (container == end_tags_container) {
+      if (container === end_tags_container) {
        container.insertBefore(new_tag, container.firstChild);
-      } else if (container == start_tags_container) {
+      } else if (container === start_tags_container) {
         container.append(new_tag);
       }
     }
@@ -201,7 +196,7 @@
 
   function moveInput(input, container) {
     if (input.value.trim() != '') {
-      if (input.value.replace(/\s/g,'').length == input.value.length) {
+      if (input.value.replace(/\s/g,'').length === input.value.length) {
         generateTagEle(input.value.trim(), container);
         input.value = '';
       } else if (caretPos(input) != 0) {
@@ -225,23 +220,20 @@
   }
 
   function moveElementsTo(container, times = 1) {
-    console.log("Moving elements "+times+" times");
     var tag_input = container.parentElement;
     var start_tags_container = tag_input.children[0];
     var end_tags_container = tag_input.children[2];
     if (times == null) {
-      if (container == start_tags_container) {
+      if (container === start_tags_container) {
         times = end_tags_container.children.length;
-      } else if (container == end_tags_container) {
+      } else if (container === end_tags_container) {
         times = start_tags_container.children.length;
       }
     }
     for (var i = 0; i < times; i++) {
-      if (container == start_tags_container && end_tags_container.children.length > 0) {
-        console.log("Moving one tag from end to start")
+      if (container === start_tags_container && end_tags_container.children.length > 0) {
         start_tags_container.appendChild(end_tags_container.firstChild);
-      } else if (container == end_tags_container && start_tags_container.children.length > 0) {
-        console.log("Moving one tag from start to end")
+      } else if (container === end_tags_container && start_tags_container.children.length > 0) {
         end_tags_container.insertBefore(start_tags_container.lastChild, end_tags_container.firstChild);
       }
     }
@@ -258,9 +250,9 @@
     var widths = [];
     var other_container;
 
-    if (container == start_tags_container) {
+    if (container === start_tags_container) {
       other_container = end_tags_container;
-    } else if (container == end_tags_container) {
+    } else if (container === end_tags_container) {
       other_container = start_tags_container;
     }
 
@@ -273,13 +265,11 @@
     moveInput(input, other_container);
 
     if (mouseX > widths[0] && mouseX < widths[widths.length-1]) {
-      console.log("Click was within a container")
       var counter = 0;
       for (var i = 1; i < widths.length; i = i + 2) {
         counter++;
-        console.log("Checking tag")
         if (widths[i-1] < mouseX && mouseX < widths[i+1]) {
-          if (container == start_tags_container) {
+          if (container === start_tags_container) {
             moveElementsTo(other_container, start_tags_container.children.length - counter);
           } else {
             moveElementsTo(other_container, counter);
@@ -287,22 +277,18 @@
           if (widths[i-1] < mouseX && mouseX < widths[i]) {
             fillInput(input, start_tags_container);
           }
-          console.log("Click was on the ~"+counter+" tag");
           break;
         }
       }
       if (widths[widths.length-2] < mouseX && mouseX < widths[widths.length-1]) {
-        console.log("Click was on the last tag")
-        if (container == end_tags_container) {
+        if (container === end_tags_container) {
           moveElementsTo(start_tags_container, null)
         }
         fillInput(input, start_tags_container);
       }
-    } else if (container == start_tags_container && mouseX < widths[0]) {
-      console.log("Click was before the start of the start tag");
+    } else if (container === start_tags_container && mouseX < widths[0]) {
       moveElementsTo(end_tags_container, null);
-    } else if (container == end_tags_container && mouseX > widths[widths.length-1]) {
-      console.log("Click was afte the end of the end tags");
+    } else if (container === end_tags_container && mouseX > widths[widths.length-1]) {
       if (SETTINGS.automatically_start_editing_last_tag) {
         moveElementsTo(start_tags_container, null);
       }
@@ -386,16 +372,15 @@
 
       var mouseX = e.clientX;
 
-      if (e.target == this) {
+      if (e.target === this) {
         if (widths[widths.length-1] < mouseX) {
-          console.log("DEEE DOOOOP")
           if (end_tags.length != 0) {
             moveInput(input, start_tags_container);
             while (end_tags_container.children.length > 0) {
               start_tags_container.appendChild(end_tags_container.firstChild);
             }
           }
-          if (SETTINGS.automatically_start_editing_last_tag && input.value == '') {
+          if (SETTINGS.automatically_start_editing_last_tag && input.value === '') {
             fillInput(input, start_tags_container);
           }
           input.focus();
@@ -411,10 +396,8 @@
         } else {
           printWidths(widths);
           if (mouseX < widths[2]) {
-            console.log("START");
             handleContainerClick(start_tags_container, mouseX);
           } else {
-            console.log("END");
             handleContainerClick(end_tags_container, mouseX);
           }
         }
@@ -443,13 +426,12 @@
     autocomplete.addEventListener('keydown', function(e) {
       var input = this.parentElement.children[1];
       var start_tags_container = this.parentElement.children[0];
-      console.log(input.value.length);
       var index = Array.prototype.indexOf.call(this.children, e.target);
       const rowlen = 3;
       var colNum = index % rowlen;
       var rowNum = Math.floor(index / (rowlen-1+0.001));
 
-      if (checkKeyCode(e, 38, "ArrowUp") && rowNum == 0) {
+      if (checkKeyCode(e, 38, "ArrowUp") && rowNum === 0) {
         input.focus();
         moveCaretToEnd(input);
         e.preventDefault();
@@ -496,7 +478,7 @@
         return false;
       }
 
-      if (checkKeyCode(e, 9, "Tab") && index == this.children.length-1 && SETTINGS.override_tab) {
+      if (checkKeyCode(e, 9, "Tab") && index === this.children.length-1 && SETTINGS.override_tab) {
         e.preventDefault();
         return false;
       }
@@ -526,7 +508,7 @@
       var start_tags = start_tags_container.children;
       var end_tags = end_tags_container.children;
 
-      if (checkKeyCode(e, 8, "Backspace") && caretPos(input) == 0 && start_tags.length != 0) {
+      if (checkKeyCode(e, 8, "Backspace") && caretPos(input) === 0 && start_tags.length != 0) {
         if (SETTINGS.delete_whole_tags) {
           start_tags_container.removeChild(start_tags_container.lastChild);
         } else {
@@ -549,14 +531,12 @@
       }
 
       if (checkKeyCode(e, 40, "ArrowDown") && suggestionEle.children.length != 0) {
-        console.log("Transitioned focus to");
-        console.log(suggestionEle.firstChild);
         suggestionEle.firstChild.focus();
         return false;
       }
 
-      if (checkKeyCode(e, 37, "ArrowLeft") && caretPos(input) == 0) {
-        if (!SETTINGS.caret_between_tags || input.value.length == 0) {
+      if (checkKeyCode(e, 37, "ArrowLeft") && caretPos(input) === 0) {
+        if (!SETTINGS.caret_between_tags || input.value.length === 0) {
           moveInput(input, end_tags_container);
           fillInput(input, start_tags_container);
           e.preventDefault();
@@ -567,8 +547,8 @@
         return false;
       }
 
-      if (checkKeyCode(e, 39, "ArrowRight") && caretPos(input) == input.value.length) {
-        if (!SETTINGS.caret_between_tags || input.value.length == 0) {
+      if (checkKeyCode(e, 39, "ArrowRight") && caretPos(input) === input.value.length) {
+        if (!SETTINGS.caret_between_tags || input.value.length === 0) {
           moveInput(input, start_tags_container);
           fillInput(input, end_tags_container);
           setCaretPosition(input, 0);
@@ -627,7 +607,7 @@
     }
     for (var i = 0; i < widths.length+2; i = i+2) {
       var div = document.createElement('div');
-      if (i % 4 == 0) {
+      if (i % 4 === 0) {
         div.style.background = 'black';
       } else {
         div.style.background = 'white';
@@ -684,7 +664,6 @@
   function renderSuggestions(input, suggestionEle) {
     clearSuggestions(suggestionEle);
     var suggestions = Taggify.autocomplete_dict;
-    console.log(suggestions);
     for (var i = 0; i < suggestions.length; i++) {
       if (suggestions[i][0].includes(input.value)) {
         var name = suggestions[i][0];
