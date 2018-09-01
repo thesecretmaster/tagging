@@ -2,14 +2,11 @@
   window.Taggify = Object.assign({}, window.Taggify, {
     'helpers': {
       'getTextWidth': function(text, style) {
-        var context;
-
         // re-use canvas context object for better performance
-        if (Taggify.helpers.getTextWidth.context) {
-          context = Taggify.helpers.getTextWidth.context;
-        } else {
-          context Taggify.helpers.getTextWidth.context = document.createElement("canvas").getContext("2d");
+        if (!Taggify.helpers.getTextWidth.context) {
+          Taggify.helpers.getTextWidth.context = document.createElement("canvas").getContext("2d");
         }
+        var context = Taggify.helpers.getTextWidth.context;
         context.style = style;
         var metrics = context.measureText(text);
         return metrics.width;

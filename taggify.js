@@ -1,6 +1,6 @@
 (function(window, document) {
   window.Taggify = Object.assign({}, window.Taggify, {
-    'autocomplete_dict': [],
+    'default_autocomplete_dict': [],
     'settings': {
       'caret_between_tags': true,
       'delete_button': true,
@@ -14,14 +14,6 @@
     ],
     'taggify_element': function(ele) {
       var div;
-      var taglist = ele.getAttribute('taggify-datalist');
-      if (taglist != undefined && document.getElementById(taglist)) {
-        var taglist_elements = document.getElementById(taglist).children;
-        Taggify.autocomplete_dict = [];
-        for (var i = 0; i < taglist_elements.length; i++) {
-          Taggify.autocomplete_dict.push([taglist_elements[i].value, '']);
-        }
-      }
       if (ele.tagName.toLowerCase() === 'div') {
         div = ele;
       } else {
@@ -38,6 +30,8 @@
           div.classList.add(input_tags[i]);
         }
         input.className = '';
+        div.setAttribute('taggify-datalist', ele.getAttribute('taggify-datalist'));
+        div.setAttribute('taggify-initial-tags', ele.getAttribute('taggify-initial-tags'));
       } else {
         var input = document.createElement('input');
         input.type = 'text';
@@ -73,26 +67,24 @@
       var autocomplete = document.createElement('div');
       autocomplete.className = 'autocomplete';
       var start_tags_container = tags_container.cloneNode();
-      if (ele.getAttribute('taggify-initial-tags') != undefined) {
-        var inital_tags = ele.getAttribute('taggify-initial-tags').split(',');
-        for (var i = 0; i < inital_tags.length; i++) {
-          var start_tag = generateTagEleRaw(inital_tags[i]);
-          start_tags_container.appendChild(start_tag);
+      resetTags(div);
+      var taglist = ele.getAttribute('taggify-datalist');
+      if (taglist != undefined && document.getElementById(taglist)) {
+        var taglist_elements = document.getElementById(taglist).children;
+        if (!div.autocomplete_dict) { div.autocomplete_dict = Taggify.default_autocomplete_dict; }
+        for (var i = 0; i < taglist_elements.length; i++) {
+          div.autocomplete_dict.push([taglist_elements[i].value, '']);
         }
       }
+      div.reset_tags = function() {
+        resetTags(this);
+      }
+      div.reset_tags.bind(div);
       div.appendChild(start_tags_container);
       div.appendChild(input);
       div.appendChild(tags_container);
       div.appendChild(autocomplete);
       Taggify.taggify(div);
-      Taggify.add_css();
-    },
-    'add_css': function() {
-      // var link = document.createElement( "link" );
-      // link.href = "./taggify.css";
-      // link.type = "text/css";
-      // link.rel = "stylesheet";
-      // document.getElementsByTagName( "head" )[0].appendChild( link );
     },
     'create_settings_form': function(ele) {
       for (var setting in window.Taggify.settings) {
@@ -123,8 +115,6 @@
   });
   var SETTINGS = window.Taggify.settings
 
-
-
   const getTextWidth = window.Taggify.helpers.getTextWidth;
   const css = window.Taggify.helpers.css;
   const caretPos = window.Taggify.helpers.caretPos;
@@ -133,6 +123,29 @@
 
   function checkKeyCode(e, num, name) {
     return (e.which === num || e.keyCode === num || e.code === name || e.key === name);
+  }
+
+  function resetTags(tag_input) {
+    var start_tags_container = tag_input.children[0];
+    var input = tag_input.children[1];
+    var end_tags_container = tag_input.children[2];
+    while (end_tags_container.children.length > 0) {
+      end_tags_container.removeChild(end_tags_container.firstChild);
+    }
+    while (start_tags_container.children.length > 0) {
+      start_tags_container.removeChild(start_tags_container.firstChild);
+    }
+    input.value = '';
+    var initial_tags = tag_input.getAttribute('taggify-initial-tags');
+    if (initial_tags != undefined) {
+      var inital_tags = initial_tags.split(',');
+      for (var i = 0; i < inital_tags.length; i++) {
+        if (inital_tags[i].trim() != '') {
+          var start_tag = generateTagEleRaw(inital_tags[i]);
+          start_tags_container.appendChild(start_tag);
+        }
+      }
+    }
   }
 
   function fillInput(input, container) {
@@ -148,6 +161,7 @@
     if (ele != undefined) {
       input.value = ele.textContent;
       container.removeChild(ele);
+      handleTagChange(tag_input);
     }
     resize_input(input);
     input.focus()
@@ -179,12 +193,18 @@
     return new_tag;
   }
 
+  function handleTagChange(tag_input) {
+    var event = new Event('tag_change');
+    tag_input.dispatchEvent(event);
+  }
+
   function generateTagEle(val, container) {
     var tag_input = container.parentElement;
     var start_tags_container = tag_input.children[0];
     var end_tags_container = tag_input.children[2];
 
     if (val != '' && !tagExists(val, tag_input)) {
+      handleTagChange(tag_input);
       var new_tag = generateTagEleRaw(val.trim());
       if (container === end_tags_container) {
        container.insertBefore(new_tag, container.firstChild);
@@ -306,9 +326,10 @@
     // These need to go first to override the tag onclick handlers
 
     start_tags_container.addEventListener('click', function(e) {
-      var start_tags_container = this.parentElement.children[0];
-      var input = this.parentElement.children[1];
-      var end_tags_container = this.parentElement.children[2];
+      var tag_input = this.parentElement;
+      var start_tags_container = tag_input.children[0];
+      var input = tag_input.children[1];
+      var end_tags_container = tag_input.children[2];
 
       var start_tags = start_tags_container.children;
       var end_tags = end_tags_container.children;
@@ -318,14 +339,16 @@
       if (tag.classList.contains('delete')) {
         tag = tag.parentElement;
         tag.parentElement.removeChild(tag);
+        handleTagChange(tag_input);
         input.focus();
       }
     });
 
     end_tags_container.addEventListener('click', function(e) {
-      var start_tags_container = this.parentElement.children[0];
-      var input = this.parentElement.children[1];
-      var end_tags_container = this.parentElement.children[2];
+      var tag_input = this.parentElement;
+      var start_tags_container = tag_input.children[0];
+      var input = tag_input.children[1];
+      var end_tags_container = tag_input.children[2];
 
       var start_tags = start_tags_container.children;
       var end_tags = end_tags_container.children;
@@ -335,6 +358,7 @@
       if (tag.classList.contains('delete')) {
         tag = tag.parentElement;
         tag.parentElement.removeChild(tag);
+        handleTagChange(tag_input);
         input.focus();
       }
     });
@@ -500,10 +524,11 @@
     // I need to refactor it.
 
     input.addEventListener('keydown', function(e) {
-      var start_tags_container = this.parentElement.children[0];
-      var input = this.parentElement.children[1];
-      var end_tags_container = this.parentElement.children[2];
-      var suggestionEle = this.parentElement.children[3];
+      var tag_input = this.parentElement;
+      var start_tags_container = tag_input.children[0];
+      var input = tag_input.children[1];
+      var end_tags_container = tag_input.children[2];
+      var suggestionEle = tag_input.children[3];
 
       var start_tags = start_tags_container.children;
       var end_tags = end_tags_container.children;
@@ -511,6 +536,7 @@
       if (checkKeyCode(e, 8, "Backspace") && caretPos(input) === 0 && start_tags.length != 0) {
         if (SETTINGS.delete_whole_tags) {
           start_tags_container.removeChild(start_tags_container.lastChild);
+          handleTagChange(tag_input);
         } else {
           var val = input.value;
           var len = start_tags[start_tags.length-1].textContent.length;
@@ -663,7 +689,7 @@
 
   function renderSuggestions(input, suggestionEle) {
     clearSuggestions(suggestionEle);
-    var suggestions = Taggify.autocomplete_dict;
+    var suggestions = input.parentElement.autocomplete_dict;
     for (var i = 0; i < suggestions.length; i++) {
       if (suggestions[i][0].includes(input.value)) {
         var name = suggestions[i][0];
