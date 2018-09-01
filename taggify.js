@@ -67,7 +67,6 @@
       var autocomplete = document.createElement('div');
       autocomplete.className = 'autocomplete';
       var start_tags_container = tags_container.cloneNode();
-      resetTags(div);
       var taglist = ele.getAttribute('taggify-datalist');
       if (taglist != undefined && document.getElementById(taglist)) {
         var taglist_elements = document.getElementById(taglist).children;
@@ -85,6 +84,7 @@
       div.appendChild(tags_container);
       div.appendChild(autocomplete);
       Taggify.taggify(div);
+      div.reset_tags();
     },
     'create_settings_form': function(ele) {
       for (var setting in window.Taggify.settings) {
