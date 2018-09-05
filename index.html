@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Tagging Test</title>
-    
+
     <!-- Taggify essentials -->
     <script src='./helpers.js'></script>
     <script src='./taggify.js'></script>
@@ -26,5 +26,21 @@
       </div>
       <div class="autocomplete"></div>
     </div>
+    <form id="taggify-test" action="#">
+      <input name='tag_name' taggify-datalist='alltehtags'>
+      <datalist id='alltehtags'>
+        <option value="ducks"></option>
+        <option value="dogs"></option>
+        <option value="cats"></option>
+        <option value="birds"></option>
+        <option value="elephants"></option>
+        <option value="humans"></option>
+        <option value="sharks"></option>
+      </datalist>
+      <input type="submit">
+    </form>
+    <script>
+      Taggify.taggify_element(document.getElementById('taggify-test').children[0]);
+    </script>
   </body>
 </html>

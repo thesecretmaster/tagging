@@ -27,20 +27,30 @@
         input = ele;
         var input_tags = input.className.split(' ');
         for (var i = 0; i < input_tags.length; i++) {
-          div.classList.add(input_tags[i]);
+          if (input_tags[i] != '') {
+            div.classList.add(input_tags[i]);
+          }
         }
         input.className = '';
-        div.setAttribute('taggify-datalist', ele.getAttribute('taggify-datalist'));
-        div.setAttribute('taggify-initial-tags', ele.getAttribute('taggify-initial-tags'));
       } else {
         var input = document.createElement('input');
         input.type = 'text';
+      }
+      input.setAttribute('autocomplete', 'off')
+      var taggify_datalist = ele.getAttribute('taggify-datalist');
+      if (taggify_datalist != null) {
+        div.setAttribute('taggify-datalist', taggify_datalist);
+      }
+      var taggify_initial_tags = ele.getAttribute('taggify-initial-tags');
+      if (taggify_initial_tags != null) {
+        div.setAttribute('taggify-initial-tags', taggify_initial_tags);
       }
       if (input.form != undefined) {
         input.form.addEventListener('submit', function(e) {
           var taggify_inputs = this.getElementsByClassName('taggify-input');
           for (var i = 0; i < taggify_inputs.length; i++) {
             var tag_input = taggify_inputs[i];
+            moveInput(input, tag_input.children[0]);
             var start_tags = tag_input.children[0].children;
             var end_tags = tag_input.children[2].children;
             var tags = [];

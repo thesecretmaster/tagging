@@ -22,7 +22,7 @@
 .taggify-input .autocomplete .suggestion {
   padding: 0.7em;
   padding-top: 0.3em;
-  width: 300px;
+  width: 33.332%;
   margin:-0.5px;
   border: black solid 1px;
 }
@@ -31,10 +31,14 @@
   margin-top: 1.2em;
   max-height: 250px;
   overflow-y: scroll;
-  width: 900px;
+  box-shadow: 3px 3px 5px 0px #ccc;
+  width: 50%;
+  font-size:1em;
   display: flex;
   flex-wrap: wrap;
   background: white;
+  border: black solid 1px;
+  margin:-0.5px;
 }
 .taggify-input .autocomplete .suggestion:focus {
   font-weight: bold;
@@ -83,6 +87,9 @@
   outline: none !important;
   -moz-appearance: none !important;
   -webkit-appearance: none !important;
+}
+.taggify-input {
+  min-width:20em;
 }
 
 .settings .group {
