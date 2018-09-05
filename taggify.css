@@ -28,17 +28,17 @@
 }
 .taggify-input .autocomplete {
   position: absolute;
+  margin:-1px;
   margin-top: 1.2em;
   max-height: 250px;
   overflow-y: scroll;
   box-shadow: 3px 3px 5px 0px #ccc;
-  width: 50%;
+  width: 75%;
   font-size:1em;
   display: flex;
   flex-wrap: wrap;
   background: white;
   border: black solid 1px;
-  margin:-0.5px;
 }
 .taggify-input .autocomplete .suggestion:focus {
   font-weight: bold;

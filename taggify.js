@@ -82,7 +82,7 @@
         var taglist_elements = document.getElementById(taglist).children;
         if (!div.autocomplete_dict) { div.autocomplete_dict = Taggify.default_autocomplete_dict; }
         for (var i = 0; i < taglist_elements.length; i++) {
-          div.autocomplete_dict.push([taglist_elements[i].value, '']);
+          div.autocomplete_dict.push([taglist_elements[i].value, taglist_elements[i].textContent]);
         }
       }
       div.reset_tags = function() {
@@ -670,7 +670,7 @@
     ele.setAttribute('data-tag', name);
     ele.className = 'suggestion';
     ele.setAttribute('tabindex', 0);
-    var header_container = document.createElement('h3');
+    var header_container = document.createElement('p');
     var header = document.createElement('span');
     if (input.length > 0) {
       name = htmlEncode(name).replace(htmlEncode(input), "<b><u>"+htmlEncode(input)+"</u></b>");
