@@ -1,6 +1,6 @@
 {
   "name": "tagging",
-  "version": "0.0.4-a",
+  "version": "0.0.5-a",
   "description": "A tagging library",
   "repository": "https://github.com/thesecretmaster/tagging",
   "main": "main.js",
