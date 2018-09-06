@@ -7,7 +7,9 @@
       'delete_whole_tags': false,
       'override_tab': true,
       'automatically_start_editing_last_tag': false,
-      'debugging': false
+      'debugging': false,
+      'submit_uncompleted_tags': true,
+      'limit_suggestions': true
     },
     'buggy_settings': [
       // 'automatically_start_editing_last_tag'
@@ -50,7 +52,9 @@
           var taggify_inputs = this.getElementsByClassName('taggify-input');
           for (var i = 0; i < taggify_inputs.length; i++) {
             var tag_input = taggify_inputs[i];
-            moveInput(input, tag_input.children[0]);
+            if (SETTINGS.submit_uncompleted_tags) {
+              moveInput(input, tag_input.children[0]);
+            }
             var start_tags = tag_input.children[0].children;
             var end_tags = tag_input.children[2].children;
             var tags = [];
@@ -700,7 +704,15 @@
   function renderSuggestions(input, suggestionEle) {
     clearSuggestions(suggestionEle);
     var suggestions = input.parentElement.autocomplete_dict;
-    for (var i = 0; i < suggestions.length; i++) {
+    var max_suggestions = 9;
+    var max_suggestion_count;
+    if (SETTINGS.limit_suggestions && suggestions.length > max_suggestions) {
+      max_suggestion_count = max_suggestions;
+    } else {
+      max_suggestion_count = suggestions.length;
+    }
+    var max_suggestion_count = suggestions.length;
+    for (var i = 0; i < max_suggestion_count; i++) {
       if (suggestions[i][0].includes(input.value)) {
         var name = suggestions[i][0];
         var desc = suggestions[i][1];
