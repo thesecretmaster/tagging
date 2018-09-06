@@ -537,6 +537,12 @@
     // This is autocomplete with a bit of input handling mixed in.
     // I need to refactor it.
 
+    tag_input.addEventListener('focusout', function(e) {
+      var suggestionEle = this.children[3];
+      clearSuggestions(suggestionEle);
+      e.preventDefault();
+    });
+
     input.addEventListener('keydown', function(e) {
       var tag_input = this.parentElement;
       var start_tags_container = tag_input.children[0];
